@@ -15,5 +15,4 @@ public interface AuthorMapper {
     AuthorResponseDto map(Author author);
 
     List<AuthorResponseDto> map(List<Author> authorList);
-
 }
