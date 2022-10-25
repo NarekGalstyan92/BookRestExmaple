@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/author_book_rest
+    username: root
+    password: root
+
