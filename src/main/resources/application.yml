@@ -1,6 +1,9 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/author_book_rest
+    url: jdbc:mysql://localhost:3306/author_boook_rest
     username: root
-    password: root
+    password: rootroot
 
+jwt:
+  secret: kKJ%gi7$bjg@buBJn
+  expiration: 330000

@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    password: rootroot
+  jpa:
+    hibernate:
+      ddl-auto: update
+
