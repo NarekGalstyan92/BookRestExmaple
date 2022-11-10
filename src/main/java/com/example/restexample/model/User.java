@@ -15,7 +15,7 @@ import javax.persistence.*;
 @Builder
 @Entity
 @Table(name = "user")
-@JsonIgnoreProperties({"hybernateLazyInstaller"})
+@JsonIgnoreProperties({"hibernateLazyInstaller"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +24,6 @@ public class User {
     private String surname;
     private String email;
     private String password;
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Role role;
 }
