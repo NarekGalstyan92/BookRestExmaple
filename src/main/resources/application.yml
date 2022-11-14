@@ -3,6 +3,9 @@ spring:
     url: jdbc:mysql://localhost:3306/author_boook_rest
     username: root
     password: rootroot
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
 jwt:
   secret: kKJ%gi7$bjg@buBJn
