@@ -1,6 +1,7 @@
 package com.example.restexample.endpoint;
 
 import com.example.restexample.dto.ToDoDto;
+import com.example.restexample.exception.EntityNotFundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,22 +18,23 @@ public class TodoEndpoint {
 
     private final RestTemplate restTemplate;
 
-    @GetMapping ("/todos")
-    public ResponseEntity<List<ToDoDto>> getAllToDos(){
+    @GetMapping("/todos")
+    public ResponseEntity<List<ToDoDto>> getAllToDos() {
         ResponseEntity<ToDoDto[]> forEntity = restTemplate.getForEntity("https://jsonplaceholder.typicode.com/todos/", ToDoDto[].class);
-        if (forEntity.hasBody()){
+        if (forEntity.hasBody()) {
             ToDoDto[] todos = forEntity.getBody();
             return ResponseEntity.ok(Arrays.asList(todos));
         }
         return ResponseEntity.notFound().build();
     }
-    @GetMapping ("/todos/{id}")
-    public ResponseEntity<ToDoDto> getToDoById(@PathVariable("id") int id){
+
+    @GetMapping("/todos/{id}")
+    public ResponseEntity<ToDoDto> getToDoById(@PathVariable("id") int id) throws EntityNotFundException {
         ResponseEntity<ToDoDto> responseEntity = restTemplate.getForEntity("https://jsonplaceholder.typicode.com/todos/" + id, ToDoDto.class);
-        if (responseEntity.hasBody()){
+        if (responseEntity.hasBody()) {
             return ResponseEntity.ok(responseEntity.getBody());
         }
-        return ResponseEntity.notFound().build();
+        throw new EntityNotFundException("Todo with " + id + " id does not exist");
     }
 
 }

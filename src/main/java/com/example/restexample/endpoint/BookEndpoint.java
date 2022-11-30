@@ -1,16 +1,18 @@
 package com.example.restexample.endpoint;
 
+import com.example.restexample.exception.EntityNotFundException;
 import com.example.restexample.model.Book;
 import com.example.restexample.repository.BookRepository;
+import com.example.restexample.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.validation.Valid;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 
 @RestController
@@ -20,16 +22,18 @@ public class BookEndpoint {
     private final BookRepository bookRepository;
     private final RestTemplate restTemplate;
 
+    private final BookService bookService;
+
 
     @GetMapping("/books")
     public List<Book> getAllBooks() {
         List<Book> all = bookRepository.findAll();
-        if (!all.isEmpty()){
+        if (!all.isEmpty()) {
             ResponseEntity<HashMap> currency = restTemplate.getForEntity("https://cb.am/latest.json.php?currency=USD", HashMap.class);
             HashMap<String, String> hashMap = currency.getBody();
-            if (!hashMap.isEmpty()){
+            if (!hashMap.isEmpty()) {
                 double usdCurrency = Double.parseDouble(hashMap.get("USD"));
-                if (usdCurrency>0) {
+                if (usdCurrency > 0) {
                     for (Book book : all) {
                         double price = book.getPrice() / usdCurrency;
                         DecimalFormat df = new DecimalFormat("#.##"); /*rounding double price*/
@@ -42,16 +46,12 @@ public class BookEndpoint {
     }
 
     @GetMapping("/books/{id}")
-    public ResponseEntity<Book> getBookById(@PathVariable("id") int id) {
-        Optional<Book> byId = bookRepository.findById(id);
-        if (byId.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(byId.get());
+    public ResponseEntity<Book> getBookById(@PathVariable("id") int id) throws EntityNotFundException {
+        return ResponseEntity.ok(bookService.getById(id));
     }
 
     @PostMapping("/books")
-    public ResponseEntity<?> createBook(@RequestBody Book book) {
+    public ResponseEntity<?> createBook(@RequestBody @Valid Book book) { /*without @Valid annotation it will not work even if we put some annotations in entity for validation*/
         bookRepository.save(book);
         return ResponseEntity.noContent().build();
     }
